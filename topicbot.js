@@ -42,9 +42,8 @@ topicbot.start = function() {
 	
 	for(var i in turntable) {
 		if (typeof(turntable[i]) == "function") {
-			var match = i.match(/\w*[A-Z]\w*[A-Z]\w*[A-Z]\w*/);
-			if (match && i != 'seedPRNG') topicbot.sendMessageName = i;			
-			//var match = String(turntable[i]).match(/function \(c,a\){c.msgid=turntable.messageId;/);
+			var match = i.match(/\w*[A-Z]\w*[A-Z]\w*/);
+			if (match && i.length < 9 && i != 'seedPRNG') topicbot.sendMessageName = i;
 		}
 		else if (typeof(turntable[i]) == "object") {
 			if(turntable[i] != null && typeof(turntable[i]) == 'object' && typeof(turntable[i].becomeDj) == 'function')  topicbot.topViewController = i;
