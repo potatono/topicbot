@@ -42,7 +42,7 @@ topicbot.start = function() {
 	
 	for(var i in turntable) {
 		if (typeof(turntable[i]) == "function") {
-			var match = i.match(/\w*[A-Z]\w*[A-Z]\w*/);
+			var match = i.match(/^[a-z]*?(([A-Z])([^A-Z|tt|ee]*)?){2,}\w*?$/g);
 			if (match && i.length < 9 && i != 'seedPRNG') topicbot.sendMessageName = i;
 		}
 		else if (typeof(turntable[i]) == "object") {
