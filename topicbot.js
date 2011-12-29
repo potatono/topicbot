@@ -7,7 +7,7 @@ if (typeof(topicbot) == "undefined") {
 		room: null,
 		roomManager: null,
 		topViewController: null,
-		sendMessageName: null,
+		sendMessageName: 'fmsbQ',
 		firstEvent: false,
 		topic: null,
 		suggestedTopic: null,
@@ -30,7 +30,7 @@ if (typeof(topicbot) == "undefined") {
 	};
 }
 
-topicbot.version = "1.548";
+topicbot.version = "1.549";
 
 topicbot.start = function() {
 	console.log("topicbot version " + this.version + " starting..");
@@ -39,16 +39,8 @@ topicbot.start = function() {
 	for(var i in window) {
 		if(window[i] != null && typeof(window[i]) == 'object' && typeof(window[i].become_dj) == 'object') topicbot.roomManager  = window[i];
 	}
-	
-	for(var i in turntable) {
-		if (typeof(turntable[i]) == "function") {
-			var match = i.match(/^[a-z]*?(([A-Z])([^A-Z|tt|ee]*)?){2,}\w*?$/g);
-			if (match && i.length < 9 && i != 'seedPRNG') topicbot.sendMessageName = i;
-		}
-		else if (typeof(turntable[i]) == "object") {
-			if(turntable[i] != null && typeof(turntable[i]) == 'object' && typeof(turntable[i].becomeDj) == 'function')  topicbot.topViewController = i;
-		}
-	}
+
+	this.linkTurntable();
 	var timer = setInterval(function() {
 		console.log("looking for turntable..");
 
@@ -60,6 +52,20 @@ topicbot.start = function() {
 			}, 3000);
 		}
 	},500);
+};
+
+topicbot.linkTurntable = function() {
+	for(var i in turntable) {
+		if (typeof(turntable[i]) == "function") {
+			if (!(/syncServerClock|main|flushUnsentMessages|setSocketAddr|socketConnected|socketKeepAlive|socketLog|socketDumpLog|initIdleChecker|idleTime|checkIdle|currentStatus|trackPresence|updatePresence|resetPresenceThrottle|sendPresence|initBuddyPresencePolling|fetchBuddyPresence|socketReconnected|pingSocket|closeSocket|addEventListener|removeEventListener|dispatchEvent|addIdleListener|removeIdleListener|setPage|reloadPage|initFavorites|hashMod|getHashedAddr|numRecentPendingCalls|whenSocketConnected|messageReceived|logMessage|randomRoom|showWelcome|die|showAlert|serverNow|seedPRNG/.test(i))) {
+				console.log("Send message set to "+i);
+				this.sendMessageName = i;
+			}
+		}
+		else if (typeof(turntable[i]) == "object") {
+			if(turntable[i] != null && typeof(turntable[i]) == 'object' && typeof(turntable[i].becomeDj) == 'function')  topicbot.topViewController = i;
+		}
+	}
 };
 
 topicbot.init = function() {
@@ -417,6 +423,10 @@ topicbot.onChat = function(name,text) {
 			else if (command == "reload") {
 				this.reload(args);
 				this.say(this.translations.botVersion + " " + this.version);
+			}
+			else if (command == "relink") {
+				this.linkTurntable();
+				this.say("Relinked");
 			}
 			else if (command == "mute") {
 				turntablePlayer.stop();
