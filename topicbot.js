@@ -1,3 +1,4 @@
+// This allows us to re-DOM inject topicbot without blasting its state..
 if (typeof(topicbot) == "undefined") {
 	topicbot = {
 		name: "topicbot",
@@ -30,8 +31,10 @@ if (typeof(topicbot) == "undefined") {
 	};
 }
 
+// This is updated by hand right now.  TODO FIXME.
 topicbot.version = "1.549";
 
+// Redefine all topicbots functions, overwritting any code on reload..
 topicbot.start = function() {
 	console.log("topicbot version " + this.version + " starting..");
 	this.started = true;
@@ -54,6 +57,7 @@ topicbot.start = function() {
 	},500);
 };
 
+// This hooks into Turntable's javascript.  The send message function is given a random name on each load so we have to track it down.
 topicbot.linkTurntable = function() {
 	for(var i in turntable) {
 		if (typeof(turntable[i]) == "function") {
@@ -74,9 +78,11 @@ topicbot.init = function() {
 	var self = this;
 	this.turntable = turntable;
 	this.room = turntable[this.topViewController];
-
+	
+	// Hook into turntable's event listeners
 	this.turntable.addEventListener("message", function(msg) { self.onMessage(msg); });
 
+	// Overload turntable's appendChatMessage function so we can monitor chat.
 	var f = this.room.appendChatMessage;		
 	this.room.appendChatMessage = function(c,b,h) {
 		f(c,b,h);
@@ -867,9 +873,11 @@ $("<div/>").html("<button type=\"button\" data-variable=\"botFunctions\">bot sta
 	}
 }
 
+// If we're loading for the first time, do startup routine.
 if (!topicbot.started) {
 	topicbot.start();
 }
+// Otherwise just refresh
 else {
 	console.log("topicbot version is now " + topicbot.version);
 	topicbot.ui.refresh();

@@ -1,1 +1,9 @@
-A topicbot for turntable.fm
+A topicbot for turntable.fm.
+
+To use this bot do a DOM injection using Firefox or Chrome while in your turntable room of choice..  
+
+Here's a bookmarklet:
+
+javascript:$.getScript('http://www.yourdomain.com/topicbot/topicbot.js');
+
+
